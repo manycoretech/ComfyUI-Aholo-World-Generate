@@ -1,0 +1,44 @@
+{
+  "10": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "example.jpg"
+    },
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "1": {
+    "class_type": "aholo.world_generate",
+    "inputs": {
+      "prompt": "废弃工业厂房室内，高挑空间与生锈金属管道，多扇大窗透入阳光与丁达尔光束，裂缝混凝土地面与浅水倒影，墙面与窗框爬满常春藤与绿植，窗外茂密森林，电影感光影，写实风格",
+      "image": [
+        "10",
+        0
+      ],
+      "name": "",
+      "cover": "",
+      "region": "cn",
+      "api_key": ""
+    },
+    "_meta": {
+      "title": "Aholo World Generate"
+    }
+  },
+  "2": {
+    "class_type": "aholo.world_wait",
+    "inputs": {
+      "world_id": [
+        "1",
+        0
+      ],
+      "region": "cn",
+      "api_key": "",
+      "timeout_seconds": 1800,
+      "poll_interval_seconds": 3
+    },
+    "_meta": {
+      "title": "Aholo World Wait"
+    }
+  }
+}

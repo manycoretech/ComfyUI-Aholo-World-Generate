@@ -1,0 +1,37 @@
+[project]
+name = "aholo-world-generate"
+version = "1.0.0"
+description = "Aholo Spatial Gen: text-to-3D indoor space for ComfyUI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dynamic = ["dependencies"]
+
+[project.urls]
+Repository = "https://github.com/manycoretech/ComfyUI-Aholo-World-Generate"
+Documentation = "https://github.com/manycoretech/ComfyUI-Aholo-World-Generate#readme"
+"Bug Tracker" = "https://github.com/manycoretech/ComfyUI-Aholo-World-Generate/issues"
+
+[project.optional-dependencies]
+dev = [
+    "numpy",
+    "pillow",
+    "pytest>=8.0.0",
+    "torch",
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aholo_world_generate*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# Register at https://registry.comfy.org → create publisher → paste PublisherId below
+[tool.comfy]
+PublisherId = "manycoretech"
+DisplayName = "Aholo World Generate"
+requires-comfyui = ">=0.3.0"

@@ -1,0 +1,98 @@
+{
+  "last_node_id": 2,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "aholo.world_generate",
+      "pos": [
+        80,
+        120
+      ],
+      "size": [
+        420,
+        300
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "world_id",
+          "name": "world_id",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Aholo World Generate"
+      },
+      "widgets_values": [
+        "废弃工业厂房室内，高挑空间与生锈金属管道，多扇大窗透入阳光与丁达尔光束，裂缝混凝土地面与浅水倒影，墙面与窗框爬满常春藤与绿植，窗外茂密森林，电影感光影，写实风格",
+        "",
+        "",
+        "cn",
+        ""
+      ]
+    },
+    {
+      "id": 2,
+      "type": "aholo.world_wait",
+      "pos": [
+        580,
+        120
+      ],
+      "size": [
+        420,
+        360
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "world_id",
+          "name": "world_id",
+          "type": "STRING",
+          "link": 1
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Aholo World Wait"
+      },
+      "widgets_values": [
+        "",
+        "cn",
+        "",
+        1800,
+        3.0
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

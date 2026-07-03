@@ -1,0 +1,11 @@
+docs/
+.agents/
+tests/
+scripts/
+.git/
+.github/
+.venv/
+skills-lock.json
+*.md
+!README.md
+!README.zh-CN.md
