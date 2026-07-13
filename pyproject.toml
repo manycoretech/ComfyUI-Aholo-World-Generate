@@ -1,7 +1,7 @@
 [project]
 name = "aholo-world-generate"
 version = "1.0.0"
-description = "Aholo Spatial Gen: text-to-3D indoor space for ComfyUI"
+description = "Aholo Spatial Gen: text-to-3D space for ComfyUI"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }

@@ -116,6 +116,8 @@ class AholoWorldWait(io.ComfyNode):
             raise RuntimeError(str(exc)) from exc
         except ValueError as exc:
             raise RuntimeError(str(exc)) from exc
+        finally:
+            client.close()
 
         progress = detail.get("progress")
         progress_value = (

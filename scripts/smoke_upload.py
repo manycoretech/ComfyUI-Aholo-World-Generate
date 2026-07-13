@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smoke test: GET asset token + upload a tiny PNG via OUS.
+"""Smoke test: GET asset token + upload a tiny PNG via the Aholo SDK.
 
 Usage (from repo root):
   AHOLO_API_KEY=xxx python scripts/smoke_upload.py
@@ -44,7 +44,7 @@ def main() -> int:
     tensor = torch.zeros(1, 64, 64, 3)
     tensor[0, :, :, 1] = 0.5
 
-    print("2/3 tensor -> PNG -> OUS upload ...")
+    print("2/3 tensor -> PNG -> SDK upload ...")
     try:
         url = AssetUploader(client).upload_image_tensor(tensor)
     except (AholoUploadError, ValueError, RuntimeError) as exc:

@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-Aholo **Spatial Gen**（3D 室内空间生成）的 ComfyUI V3 自定义节点插件。
+Aholo **Spatial Gen**（3D 空间生成）的 ComfyUI V3 自定义节点插件。
 
 ## 安装
 
@@ -80,7 +80,7 @@ python scripts/validate_examples.py
 ## 命令行冒烟测试（无需 ComfyUI）
 
 ```bash
-pip install httpx torch pillow numpy
+pip install -r requirements.txt torch pillow numpy
 python scripts/smoke_upload.py
 python scripts/smoke_generate.py
 python scripts/smoke_generate.py --with-image

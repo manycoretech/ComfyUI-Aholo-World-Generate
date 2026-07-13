@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+from typing import Any
+
 import torch
 
-from aholo_world_generate.client.ous_upload import OusUploader
+from manycore.aholo_sdk_asset import AssetClient
+from manycore.aholo_sdk_core import AholoError
+
 from aholo_world_generate.client.world_api import AholoClient
-from aholo_world_generate.util.errors import AholoApiError, AholoUploadError
+from aholo_world_generate.util.errors import AholoUploadError
 from aholo_world_generate.util.image_tensor import first_image_tensor, tensor_to_png_bytes
 
 UPLOAD_FILENAME = "comfyui-reference.png"
@@ -14,7 +19,7 @@ class AssetUploader:
     """Upload ComfyUI IMAGE tensors to Aholo OUS and return a public URL."""
 
     def __init__(self, client: AholoClient) -> None:
-        self._client = client
+        self._asset_client = AssetClient(client.config)
 
     def upload_image_tensor(self, image: torch.Tensor) -> str:
         tensor = first_image_tensor(image)
@@ -24,20 +29,27 @@ class AssetUploader:
         png_bytes = tensor_to_png_bytes(tensor)
 
         try:
-            token = self._client.get_asset_upload_token()
-        except AholoApiError as exc:
+            result = self._asset_client.upload_bytes(
+                png_bytes,
+                filename=UPLOAD_FILENAME,
+            )
+        except AholoError as exc:
             raise AholoUploadError(str(exc)) from exc
+        finally:
+            self.close()
+        url = self._extract_url(result)
+        if not url:
+            raise AholoUploadError("上传成功但响应缺少 url")
+        return url
 
-        try:
-            ous_token = token["ousToken"]
-            global_domain = token["globalDomain"]
-            block_size = int(token["blockSize"])
-        except (KeyError, TypeError, ValueError) as exc:
-            raise AholoUploadError("获取 OUS 上传凭证响应字段不完整") from exc
+    def close(self) -> None:
+        gateway = getattr(self._asset_client, "gateway", None)
+        close = getattr(gateway, "close", None)
+        if callable(close):
+            close()
 
-        uploader = OusUploader(
-            global_domain=str(global_domain),
-            ous_token=str(ous_token),
-            block_size=block_size,
-        )
-        return uploader.upload_bytes(png_bytes, filename=UPLOAD_FILENAME)
+    @staticmethod
+    def _extract_url(result: Any) -> str:
+        if isinstance(result, Mapping):
+            return str(result.get("url") or "")
+        return str(getattr(result, "url", "") or "")

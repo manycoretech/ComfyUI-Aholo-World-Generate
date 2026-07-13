@@ -19,7 +19,7 @@ class AholoWorldGenerate(io.ComfyNode):
             category="Aholo/World",
             description=(
                 "提交 Aholo Spatial Gen 异步任务（POST /world/v1/generations）。"
-                "支持纯文案、单张垫图或图文组合；室内效果更稳定，非室内为 Beta。"
+                "支持纯文案、单张垫图或图文组合，生成 3D 空间。"
             ),
             inputs=[
                 io.String.Input(
@@ -100,21 +100,24 @@ class AholoWorldGenerate(io.ComfyNode):
         client = AholoClient(region=region, api_key=api_key or None)
         resources: list[dict[str, str]] | None = None
 
-        if image is not None:
-            try:
-                image_url = AssetUploader(client).upload_image_tensor(image)
-            except AholoUploadError as exc:
-                raise RuntimeError(str(exc)) from exc
-            resources = [{"url": image_url, "type": "image"}]
-
         try:
-            world_id = client.create_generation(
-                prompt=prompt_value,
-                resources=resources,
-                name=name_value,
-                cover=cover_value,
-            )
-        except AholoApiError as exc:
-            raise RuntimeError(str(exc)) from exc
+            if image is not None:
+                try:
+                    image_url = AssetUploader(client).upload_image_tensor(image)
+                except AholoUploadError as exc:
+                    raise RuntimeError(str(exc)) from exc
+                resources = [{"url": image_url, "type": "image"}]
+
+            try:
+                world_id = client.create_generation(
+                    prompt=prompt_value,
+                    resources=resources,
+                    name=name_value,
+                    cover=cover_value,
+                )
+            except AholoApiError as exc:
+                raise RuntimeError(str(exc)) from exc
+        finally:
+            client.close()
 
         return io.NodeOutput(world_id)

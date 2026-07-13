@@ -2,7 +2,7 @@
 
 English | [Simplified Chinese](README.zh-CN.md)
 
-ComfyUI V3 custom nodes for Aholo **Spatial Gen**, which generates indoor 3D spaces from text prompts with an optional reference image.
+ComfyUI V3 custom nodes for Aholo **Spatial Gen**, which generates 3D spaces from text prompts with an optional reference image.
 
 ## Installation
 
@@ -80,7 +80,7 @@ python scripts/validate_examples.py
 ## CLI Smoke Tests
 
 ```bash
-pip install httpx torch pillow numpy
+pip install -r requirements.txt torch pillow numpy
 python scripts/smoke_upload.py
 python scripts/smoke_generate.py
 python scripts/smoke_generate.py --with-image

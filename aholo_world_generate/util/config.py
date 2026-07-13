@@ -14,16 +14,7 @@ FAILURE_STATUSES = TERMINAL_STATUSES - SUCCESS_STATUSES
 # OpenAPI: WorldOpenApiUpAxis
 VALID_UP_AXES = frozenset({"Y", "Z"})
 
-# OpenAPI generateWorldDetail 示例；WorldDetail.scene 运行时对 Spatial Gen 为 ai_gen
-SCENE_AI_GEN = "ai_gen"
-
-# OpenAPI: GenerateWorldResourceItem 支持的图片扩展名
-GENERATION_IMAGE_EXTENSIONS = frozenset({".jpg", ".jpeg", ".png", ".webp"})
-
-REGION_BASE_URLS = {
-    "cn": "https://api.aholo3d.cn",
-    "com": "https://api.aholo3d.com",
-}
+VALID_REGIONS = frozenset({"cn", "com"})
 
 # Spatial Gen 成功时必须有的 assets 字段（lodMetaPath 见 SplatFileUrls：LOD 后处理完成后才有，可为空）
 REQUIRED_SUCCESS_ASSET_FIELDS = (
@@ -51,29 +42,9 @@ def resolve_api_key(api_key: str | None) -> str:
 
 def resolve_region(region: str | None) -> str:
     value = (region or os.environ.get("AHOLO_REGION", "cn")).strip().lower()
-    if value not in REGION_BASE_URLS:
+    if value not in VALID_REGIONS:
         raise ValueError(f"不支持的 region: {value!r}，仅支持 cn / com")
     return value
-
-
-def resolve_base_url(region: str | None) -> str:
-    return REGION_BASE_URLS[resolve_region(region)]
-
-
-def _world_path_prefix(region: str) -> str:
-    return "/global" if resolve_region(region) == "com" else ""
-
-
-def generations_path(region: str) -> str:
-    return f"{_world_path_prefix(region)}/world/v1/generations"
-
-
-def world_detail_path(region: str, world_id: str) -> str:
-    return f"{_world_path_prefix(region)}/world/v1/{world_id}"
-
-
-def asset_token_path(region: str) -> str:
-    return f"{_world_path_prefix(region)}/asset/v1/token"
 
 
 def parse_world_detail(detail: dict[str, Any]) -> dict[str, Any]:

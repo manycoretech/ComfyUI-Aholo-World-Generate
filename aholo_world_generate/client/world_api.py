@@ -1,31 +1,33 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
-import httpx
+from manycore.aholo_sdk_asset import AssetClient
+from manycore.aholo_sdk_core import AholoClientConfig, AholoError
+from manycore.aholo_sdk_world import WorldClient
 
 from aholo_world_generate.util.config import (
-    asset_token_path,
-    generations_path,
     resolve_api_key,
-    resolve_base_url,
-    world_detail_path,
+    resolve_region,
 )
 from aholo_world_generate.util.errors import AholoApiError
 
+SDK_USER_AGENT = "comfyui-aholo-world-generate/1.0.0"
+
 
 class AholoClient:
-    """HTTP client for Aholo World Spatial Gen APIs (OpenAPI: world/openapi.yaml)."""
+    """Small adapter around the official Aholo Python SDK."""
 
     def __init__(self, region: str, api_key: str | None = None) -> None:
-        self.region = region
+        self.region = resolve_region(region)
         self.api_key = resolve_api_key(api_key)
-        self.base_url = resolve_base_url(region)
-
-    def _headers(self) -> dict[str, str]:
-        return {
-            "Authorization": self.api_key,
-        }
+        self.config = AholoClientConfig(
+            api_key=self.api_key,
+            region=self.region,
+            user_agent=SDK_USER_AGENT,
+        )
+        self._world_client = WorldClient(self.config)
 
     def create_generation(
         self,
@@ -59,76 +61,77 @@ class AholoClient:
         if resources:
             payload["resources"] = resources
 
-        with httpx.Client(base_url=self.base_url, timeout=60.0) as client:
-            response = client.post(
-                generations_path(self.region),
-                json=payload,
-                headers=self._headers(),
+        try:
+            operation = self._world_client.generations.create(
+                prompt=payload.get("prompt"),
+                resources=payload.get("resources"),
+                name=payload.get("name"),
+                cover=payload.get("cover"),
             )
-        return self._parse_world_id(response)
+        except AholoError as exc:
+            raise self._to_api_error(exc) from exc
+        return self._parse_world_id(operation)
 
     def get_world(self, world_id: str) -> dict[str, Any]:
         """GET .../world/v1/{worldId} — response: WorldDetail."""
-        with httpx.Client(base_url=self.base_url, timeout=60.0) as client:
-            response = client.get(
-                world_detail_path(self.region, world_id),
-                headers=self._headers(),
-            )
-        return self._parse_json(response)
+        try:
+            return self._as_dict(self._world_client.retrieve(world_id))
+        except AholoError as exc:
+            raise self._to_api_error(exc) from exc
 
     def get_asset_upload_token(self) -> dict[str, Any]:
         """GET .../asset/v1/token — response: UploadTokenOuterOpen."""
-        with httpx.Client(base_url=self.base_url, timeout=60.0) as client:
-            response = client.get(
-                asset_token_path(self.region),
-                headers=self._headers(),
-            )
-        return self._parse_json(response)
+        asset_client = AssetClient(self.config)
+        try:
+            return self._as_dict(asset_client.get_upload_token())
+        except AholoError as exc:
+            raise self._to_api_error(exc) from exc
+        finally:
+            self._close_sdk_client(asset_client)
 
-    def _parse_world_id(self, response: httpx.Response) -> str:
-        data = self._parse_json(response)
+    def close(self) -> None:
+        self._close_sdk_client(self._world_client)
+
+    @staticmethod
+    def _close_sdk_client(client: Any) -> None:
+        gateway = getattr(client, "gateway", None) or getattr(client, "_gateway", None)
+        close = getattr(gateway, "close", None)
+        if callable(close):
+            close()
+
+    def _parse_world_id(self, data: Any) -> str:
+        data = self._as_dict(data)
         world_id = data.get("worldId")
         if not world_id:
             raise AholoApiError(
                 "创建任务成功但响应缺少 worldId（WorldAsyncOperation）",
-                status_code=response.status_code,
             )
         return str(world_id)
 
     @staticmethod
-    def _extract_api_error(data: dict[str, Any]) -> tuple[str, str | None]:
-        message = data.get("message") or "Aholo API 错误"
-        localized = data.get("localizedMessage") or {}
-        if isinstance(localized, dict) and localized.get("message"):
-            message = str(localized["message"])
+    def _as_dict(value: Any) -> dict[str, Any]:
+        if isinstance(value, Mapping):
+            return dict(value)
+        if hasattr(value, "model_dump"):
+            dumped = value.model_dump()
+            if isinstance(dumped, Mapping):
+                return dict(dumped)
+        if hasattr(value, "to_dict"):
+            dumped = value.to_dict()
+            if isinstance(dumped, Mapping):
+                return dict(dumped)
+        if hasattr(value, "__dict__"):
+            return {
+                key: item
+                for key, item in vars(value).items()
+                if not key.startswith("_")
+            }
+        raise AholoApiError("Aholo SDK 响应格式异常")
 
-        biz_code: str | None = None
-        details = data.get("details") or {}
-        if isinstance(details, dict):
-            meta = details.get("metaData") or {}
-            if isinstance(meta, dict) and meta.get("bizCode"):
-                biz_code = str(meta["bizCode"])
-        return str(message), biz_code
-
-    def _parse_json(self, response: httpx.Response) -> dict[str, Any]:
-        try:
-            data = response.json()
-        except ValueError as exc:
-            raise AholoApiError(
-                f"Aholo API 返回非 JSON 响应 (HTTP {response.status_code})",
-                status_code=response.status_code,
-            ) from exc
-
-        if response.status_code >= 400:
-            if isinstance(data, dict):
-                message, biz_code = self._extract_api_error(data)
-            else:
-                message, biz_code = response.reason_phrase or "HTTP 错误", None
-            raise AholoApiError(
-                message,
-                status_code=response.status_code,
-                biz_code=biz_code,
-            )
-        if not isinstance(data, dict):
-            raise AholoApiError("Aholo API 响应格式异常", status_code=response.status_code)
-        return data
+    @staticmethod
+    def _to_api_error(exc: AholoError) -> AholoApiError:
+        return AholoApiError(
+            str(exc),
+            status_code=getattr(exc, "status_code", None),
+            biz_code=getattr(exc, "biz_code", None),
+        )

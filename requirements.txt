@@ -1,1 +1,3 @@
-httpx>=0.27.0
+manycore-aholo-sdk-asset>=1.2.0,<2.0.0
+manycore-aholo-sdk-core>=1.2.0,<2.0.0
+manycore-aholo-sdk-world>=1.3.0,<2.0.0
