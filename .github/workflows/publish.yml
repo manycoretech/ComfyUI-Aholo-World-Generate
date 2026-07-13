@@ -26,6 +26,6 @@ jobs:
         run: python scripts/validate_examples.py
 
       - name: Publish node
-        run: comfy node publish
-        env:
-          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+        run: |
+          comfy --skip-prompt --no-enable-telemetry env
+          comfy node publish --token "${{ secrets.REGISTRY_ACCESS_TOKEN }}"
