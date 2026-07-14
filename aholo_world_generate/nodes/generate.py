@@ -38,11 +38,6 @@ class AholoWorldGenerate(io.ComfyNode):
                     default="",
                     tooltip="世界展示名称（GenerateWorldRequest.name，可选）",
                 ),
-                io.String.Input(
-                    "cover",
-                    default="",
-                    tooltip="封面图 URL（GenerateWorldRequest.cover，可选）",
-                ),
                 io.Combo.Input(
                     "region",
                     options=["cn", "com"],
@@ -69,7 +64,6 @@ class AholoWorldGenerate(io.ComfyNode):
         prompt: str,
         image: Any = None,
         name: str = "",
-        cover: str = "",
         region: str = "cn",
         api_key: str = "",
     ) -> bool | str:
@@ -89,13 +83,11 @@ class AholoWorldGenerate(io.ComfyNode):
         prompt: str,
         image: Any = None,
         name: str = "",
-        cover: str = "",
         region: str = "cn",
         api_key: str = "",
     ) -> io.NodeOutput:
         prompt_value = (prompt or "").strip() or None
         name_value = (name or "").strip() or None
-        cover_value = (cover or "").strip() or None
 
         client = AholoClient(region=region, api_key=api_key or None)
         resources: list[dict[str, str]] | None = None
@@ -113,7 +105,6 @@ class AholoWorldGenerate(io.ComfyNode):
                     prompt=prompt_value,
                     resources=resources,
                     name=name_value,
-                    cover=cover_value,
                 )
             except AholoApiError as exc:
                 raise RuntimeError(str(exc)) from exc

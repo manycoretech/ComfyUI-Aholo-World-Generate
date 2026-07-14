@@ -13,7 +13,7 @@ from aholo_world_generate.util.config import (
 )
 from aholo_world_generate.util.errors import AholoApiError
 
-SDK_USER_AGENT = "comfyui-aholo-world-generate/1.0.0"
+SDK_USER_AGENT = "comfyui-aholo-world-generate/1.1.0"
 
 
 class AholoClient:
@@ -35,7 +35,6 @@ class AholoClient:
         prompt: str | None = None,
         resources: list[dict[str, str]] | None = None,
         name: str | None = None,
-        cover: str | None = None,
     ) -> str:
         """POST .../world/v1/generations — body: GenerateWorldRequest."""
         has_prompt = bool((prompt or "").strip())
@@ -54,8 +53,6 @@ class AholoClient:
         payload: dict[str, Any] = {}
         if name:
             payload["name"] = name
-        if cover:
-            payload["cover"] = cover
         if has_prompt:
             payload["prompt"] = prompt.strip()
         if resources:
@@ -66,7 +63,6 @@ class AholoClient:
                 prompt=payload.get("prompt"),
                 resources=payload.get("resources"),
                 name=payload.get("name"),
-                cover=payload.get("cover"),
             )
         except AholoError as exc:
             raise self._to_api_error(exc) from exc

@@ -92,7 +92,6 @@ def test_world_client_delegates_generation_to_sdk(monkeypatch):
             "prompt": "hello",
             "resources": [{"url": "https://cdn.example.com/ref.png", "type": "image"}],
             "name": "demo",
-            "cover": None,
         }
     ]
 

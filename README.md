@@ -6,6 +6,14 @@ ComfyUI V3 custom nodes for Aholo **Spatial Gen**, which generates 3D spaces fro
 
 ## Installation
 
+### ComfyUI-Manager (recommended)
+
+1. Open ComfyUI and launch **ComfyUI-Manager**.
+2. Search for **Aholo World Generate** (publisher: `manycoretech`).
+3. Install, then restart ComfyUI.
+
+Registry page: https://comfyregistry.org/nodes/manycoretech/aholo-world-generate
+
 ### Manual Installation
 
 Clone or symlink this repository into ComfyUI's `custom_nodes/` directory:
@@ -55,12 +63,16 @@ Example prompt: `abandoned industrial factory interior, high-ceiling space with 
 
 ## Example Workflows
 
-The `examples/` directory contains importable workflows:
+The `examples/` directory contains importable workflows. To open a UI workflow in ComfyUI:
+
+- Drag the `.json` file onto the canvas, or
+- Press `Ctrl+O` / `Cmd+O`, or
+- Use the menu **File → Open**
 
 | File | Description |
 |------|------|
-| `spatial_gen_prompt.json` | Prompt-only workflow for ComfyUI **Workflow → Open** |
-| `spatial_gen_prompt_image.json` | Prompt + reference image workflow. Copy `examples/example.jpg` to ComfyUI's `input/` directory before running. |
+| `spatial_gen_prompt.json` | Prompt-only workflow |
+| `spatial_gen_prompt_image.json` | Prompt + reference image. Copy `examples/example.jpg` to ComfyUI's `input/` directory before running. |
 | `*.api.json` | API-format workflows for ComfyUI `/prompt` calls |
 
 Validate example files:
