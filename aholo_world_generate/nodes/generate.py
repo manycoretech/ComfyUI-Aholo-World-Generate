@@ -20,6 +20,8 @@ class AholoWorldGenerate(io.ComfyNode):
             description=(
                 "提交 Aholo Spatial Gen 异步任务（POST /world/v1/generations）。"
                 "支持纯文案、单张垫图或图文组合，生成 3D 空间。"
+                "需配置 API Key：国内 https://labs.aholo3d.cn/api-keys ，"
+                "海外 https://labs.aholo3d.com/api-keys 。"
             ),
             inputs=[
                 io.String.Input(
@@ -47,7 +49,11 @@ class AholoWorldGenerate(io.ComfyNode):
                 io.String.Input(
                     "api_key",
                     default="",
-                    tooltip="覆盖环境变量 AHOLO_API_KEY；留空则读取环境变量",
+                    tooltip=(
+                        "Aholo API Key；留空则读取环境变量 AHOLO_API_KEY。"
+                        "申请：https://labs.aholo3d.cn/api-keys （国内）或 "
+                        "https://labs.aholo3d.com/api-keys （海外）"
+                    ),
                 ),
             ],
             outputs=[

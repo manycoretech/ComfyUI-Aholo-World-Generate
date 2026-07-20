@@ -26,6 +26,8 @@ REQUIRED_SUCCESS_ASSET_FIELDS = (
 
 
 API_KEY_ENV_NAME = "AHOLO_API_KEY"
+API_KEY_APPLY_URL_CN = "https://labs.aholo3d.cn/api-keys"
+API_KEY_APPLY_URL_GLOBAL = "https://labs.aholo3d.com/api-keys"
 
 
 def resolve_api_key(api_key: str | None) -> str:
@@ -35,7 +37,8 @@ def resolve_api_key(api_key: str | None) -> str:
     if not key:
         raise ValueError(
             "未配置 Aholo API Key：请在节点中填写 api_key，"
-            f"或设置环境变量 {API_KEY_ENV_NAME}"
+            f"或设置环境变量 {API_KEY_ENV_NAME}。"
+            f"申请地址：国内 {API_KEY_APPLY_URL_CN} ；海外 {API_KEY_APPLY_URL_GLOBAL}"
         )
     return key
 

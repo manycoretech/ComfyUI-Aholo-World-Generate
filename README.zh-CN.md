@@ -2,7 +2,14 @@
 
 [English](README.md) | 简体中文
 
-Aholo **Spatial Gen**（3D 空间生成）的 ComfyUI V3 自定义节点插件。
+Aholo **Spatial Gen**（3D 空间生成）的 ComfyUI V3 自定义节点插件，支持文生 3D、图生 3D，以及图文组合。
+
+> **使用前需申请 API Key。** 登录 Aholo Labs 后创建并复制：
+>
+> - 国内：https://labs.aholo3d.cn/api-keys
+> - 海外：https://labs.aholo3d.com/api-keys
+>
+> 然后设置环境变量 `AHOLO_API_KEY`，或在节点 `api_key` 中填写。
 
 ## 安装
 

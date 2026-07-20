@@ -2,7 +2,14 @@
 
 English | [Simplified Chinese](README.zh-CN.md)
 
-ComfyUI V3 custom nodes for Aholo **Spatial Gen**, which generates 3D spaces from text prompts with an optional reference image.
+ComfyUI V3 custom nodes for Aholo **Spatial Gen**: generate 3D spaces from text, a reference image, or both.
+
+> **API Key required.** Create one after signing in to Aholo Labs:
+>
+> - China: https://labs.aholo3d.cn/api-keys
+> - Global: https://labs.aholo3d.com/api-keys
+>
+> Then set `AHOLO_API_KEY`, or paste the key into the node `api_key` field.
 
 ## Installation
 

@@ -21,7 +21,10 @@ def test_resolve_api_key_missing():
         resolve_api_key(None)
         raise AssertionError("expected ValueError")
     except ValueError as exc:
-        assert "AHOLO_API_KEY" in str(exc)
+        msg = str(exc)
+        assert "AHOLO_API_KEY" in msg
+        assert "https://labs.aholo3d.cn/api-keys" in msg
+        assert "https://labs.aholo3d.com/api-keys" in msg
 
 
 def test_create_generation_requires_prompt_or_resources():

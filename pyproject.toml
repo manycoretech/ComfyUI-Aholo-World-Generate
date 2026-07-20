@@ -1,7 +1,7 @@
 [project]
 name = "aholo-world-generate"
-version = "1.1.0"
-description = "Aholo Spatial Gen: text-to-3D space for ComfyUI"
+version = "1.1.1"
+description = "Aholo Spatial Gen for ComfyUI: text-to-3D and image-to-3D space generation. Get API Key at https://labs.aholo3d.cn/api-keys (China) or https://labs.aholo3d.com/api-keys (Global)."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }

@@ -13,7 +13,7 @@ from aholo_world_generate.util.config import (
 )
 from aholo_world_generate.util.errors import AholoApiError
 
-SDK_USER_AGENT = "comfyui-aholo-world-generate/1.1.0"
+SDK_USER_AGENT = "comfyui-aholo-world-generate/1.1.1"
 
 
 class AholoClient:

@@ -18,6 +18,8 @@ class AholoWorldWait(io.ComfyNode):
             description=(
                 "轮询 GET /world/v1/{worldId} 直至终态或超时。"
                 "SUCCEEDED 时输出 WorldDetail 与 assets（imagery.panoUrl、splats.urls、semanticsMetadata.upAxis）。"
+                "需配置 API Key：国内 https://labs.aholo3d.cn/api-keys ，"
+                "海外 https://labs.aholo3d.com/api-keys 。"
             ),
             inputs=[
                 io.String.Input("world_id", tooltip="WorldAsyncOperation.worldId"),
@@ -25,7 +27,11 @@ class AholoWorldWait(io.ComfyNode):
                 io.String.Input(
                     "api_key",
                     default="",
-                    tooltip="覆盖环境变量 AHOLO_API_KEY",
+                    tooltip=(
+                        "Aholo API Key；留空则读取环境变量 AHOLO_API_KEY。"
+                        "申请：https://labs.aholo3d.cn/api-keys （国内）或 "
+                        "https://labs.aholo3d.com/api-keys （海外）"
+                    ),
                 ),
                 io.Int.Input(
                     "timeout_seconds",
